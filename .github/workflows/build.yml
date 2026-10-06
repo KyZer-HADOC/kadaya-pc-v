@@ -15,28 +15,39 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download Godot 4.3
+      - name: Download Godot 4.3 + export templates
         shell: pwsh
         run: |
           Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_win64.exe.zip" -OutFile godot.zip
-          Expand-Archive godot.zip -DestinationPath godot
-          $exe = Get-ChildItem godot -Filter "*.exe" -Recurse | Select-Object -First 1
+          Expand-Archive godot.zip -DestinationPath godot -Force
+
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz" -OutFile templates.tpz
+          $templateRoot = "$env:APPDATA/Godot/export_templates/4.3.stable"
+          New-Item -ItemType Directory -Force -Path $templateRoot | Out-Null
+          Expand-Archive templates.tpz -DestinationPath templates_unpacked -Force
+          Copy-Item "templates_unpacked/templates/*" $templateRoot -Recurse -Force
+
+          $exe = Get-ChildItem godot -Filter "Godot_v4.3-stable_win64_console.exe" -Recurse | Select-Object -First 1
+          if (!$exe) { throw "Godot executable not found." }
           echo "GODOT_EXE=$($exe.FullName)" >> $env:GITHUB_ENV
 
-      - name: Import project
+      - name: Validate Godot project
         shell: pwsh
-        run: '& "$env:GODOT_EXE" --headless --path . --editor --quit'
+        run: |
+          & "$env:GODOT_EXE" --headless --path . --editor --quit
+          if ($LASTEXITCODE -ne 0) { throw "Godot project validation failed." }
 
       - name: Export Windows game
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path build | Out-Null
           & "$env:GODOT_EXE" --headless --path . --export-release "Windows Desktop" "build/Kadaya.exe"
+          if ($LASTEXITCODE -ne 0) { throw "Godot export failed." }
           if (!(Test-Path "build/Kadaya.exe")) { throw "Kadaya.exe was not created." }
 
       - name: Zip game
         shell: pwsh
-        run: Compress-Archive -Path "build/Kadaya.exe" -DestinationPath "Kadaya-PC-Windows.zip"
+        run: Compress-Archive -Path "build/Kadaya.exe" -DestinationPath "Kadaya-PC-Windows.zip" -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
