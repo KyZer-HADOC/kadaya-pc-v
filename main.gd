@@ -1,12 +1,9 @@
 extends Node3D
 
-var map_panel: Panel
-var skills_panel: Panel
-var camera: Camera3D
+var panel: Panel
 
 func _ready():
-    camera = $Camera
-    map_panel = $HUD/Panel
+    panel = $HUD/Panel
     $HUD/Top/MapButton.pressed.connect(_show_map)
     $HUD/Top/SkillsButton.pressed.connect(_show_skills)
     $HUD/Top/PlayButton.pressed.connect(_close_panels)
@@ -20,29 +17,28 @@ func _input(event):
         elif event.keycode == KEY_ESCAPE: _close_panels()
 
 func _show_skills():
-    map_panel.visible = true
-    $HUD/Panel/Header.text = "SKILLS"
-    $HUD/Panel/Body.text = "SHADOW DASH     [UNLOCKED]\nFast directional dash. Cooldown: 2.5s\n\nWIND STEP        [LOCKED]\nAir movement technique.\n\nRASEN STRIKE     [LOCKED]\nA high-impact chakra-style attack.\n\nSHADOW CLONE    [LOCKED]\nCreate a temporary decoy.\n\nSkill points: 0"
+    panel.visible = true
+    panel.get_node("Header").text = "SKILLS"
+    panel.get_node("Body").text = "SHADOW DASH     [UNLOCKED]\nFast directional dash. Cooldown: 2.5s\n\nWIND STEP        [LOCKED]\nAir movement technique.\n\nRASEN STRIKE     [LOCKED]\nA high-impact chakra-style attack.\n\nSHADOW CLONE    [LOCKED]\nCreate a temporary decoy.\n\nSkill points: 0"
 
 func _show_map():
-    map_panel.visible = true
-    $HUD/Panel/Header.text = "WORLD MAP"
-    $HUD/Panel/Body.text = "KADAYA — ACT I\n\n[01] SHADOW VILLAGE       ★ CURRENT\n[02] BAMBOO PASS          ○ LOCKED\n[03] FORGOTTEN SHRINE     ○ LOCKED\n[04] ASHEN FORTRESS       ○ LOCKED\n\nProgress: 1 / 4 areas discovered"
+    panel.visible = true
+    panel.get_node("Header").text = "WORLD MAP"
+    panel.get_node("Body").text = "KADAYA — ACT I\n\n[01] SHADOW VILLAGE       ★ CURRENT\n[02] BAMBOO PASS          ○ LOCKED\n[03] FORGOTTEN SHRINE     ○ LOCKED\n[04] ASHEN FORTRESS       ○ LOCKED\n\nProgress: 1 / 4 areas discovered"
 
 func _close_panels():
-    map_panel.visible = false
+    panel.visible = false
 
 func _build_world():
-    var mat = StandardMaterial3D.new()
-    mat.albedo_color = Color(0.10,0.13,0.10)
-    mat.roughness = 1.0
+    var ground_mat = StandardMaterial3D.new()
+    ground_mat.albedo_color = Color(0.10,0.13,0.10)
     for x in range(-8,9):
         for z in range(-8,9):
             var box = MeshInstance3D.new()
             var mesh = BoxMesh.new()
             mesh.size = Vector3(1,0.4,1)
             box.mesh = mesh
-            box.material_override = mat
+            box.material_override = ground_mat
             box.position = Vector3(x,-0.25,z)
             add_child(box)
     for p in [Vector3(-4,0,-3),Vector3(4,0,-5),Vector3(-5,0,5),Vector3(5,0,4)]:
