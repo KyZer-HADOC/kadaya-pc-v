@@ -1,5 +1,4 @@
 extends Node3D
-
 var panel: Panel
 
 func _ready():
@@ -19,7 +18,7 @@ func _input(event):
 func _show_skills():
     panel.visible = true
     panel.get_node("Header").text = "SKILLS"
-    panel.get_node("Body").text = "SHADOW DASH     [UNLOCKED]\nFast directional dash. Cooldown: 2.5s\n\nWIND STEP        [LOCKED]\nAir movement technique.\n\nRASEN STRIKE     [LOCKED]\nA high-impact chakra-style attack.\n\nSHADOW CLONE    [LOCKED]\nCreate a temporary decoy.\n\nSkill points: 0"
+    panel.get_node("Body").text = "SHADOW DASH     [UNLOCKED]\nHold SHIFT to move at high speed.\n\nWIND STEP        [LOCKED]\nAir movement technique.\n\nRASEN STRIKE     [LOCKED]\nA powerful chakra-style attack.\n\nSHADOW CLONE    [LOCKED]\nCreate a temporary decoy.\n\nSkill points: 0"
 
 func _show_map():
     panel.visible = true
@@ -41,6 +40,14 @@ func _build_world():
             box.material_override = ground_mat
             box.position = Vector3(x,-0.25,z)
             add_child(box)
+    var body = StaticBody3D.new()
+    var collision = CollisionShape3D.new()
+    var shape = BoxShape3D.new()
+    shape.size = Vector3(17,0.4,17)
+    collision.shape = shape
+    body.position = Vector3(0,-0.25,0)
+    body.add_child(collision)
+    add_child(body)
     for p in [Vector3(-4,0,-3),Vector3(4,0,-5),Vector3(-5,0,5),Vector3(5,0,4)]:
         var rock = MeshInstance3D.new()
         var sphere = SphereMesh.new()
