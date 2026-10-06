@@ -1,18 +1,9 @@
-# KADAYA
+[![Kadaya PC](https://img.shields.io/badge/Kadaya-PC%203D%20Prototype-black)](https://github.com/KyZer-HADOC/kadaya-pc-v)
 
-2D ninja / warrior action game (MonoGame, C#). You are The Grim Reaper.
+# Kadaya — The Last Shadow
 
-## Run
-1. Install the .NET 8 SDK: https://dotnet.microsoft.com/download
-2. In this folder: `dotnet run`
+Lightweight Godot 4 PC prototype. Landscape 1280×720, basic 3D area, player movement, World Map and Skills screens.
 
-## Build an .exe
-`dotnet publish -c Release -r win-x64 --self-contained -o publish`
+**Controls:** WASD move · Space jump · M Map · K Skills · Esc close.
 
-## Controls
-A/D move | W/Space jump (x2) | Shift shadow step | J scythe combo | K soul kunai
-Hold L Soul Rasengan | E Shadow Clone Jutsu | Q Death's Eclipse | F11 fullscreen | Esc quit
-
-## setup.exe (GitHub Actions)
-Push to `main` -> Actions tab -> "Build KADAYA setup.exe" -> download the `KADAYA-setup` artifact.
-Push a tag like `v1.0` to also publish setup.exe on the Releases page.
+Next: combat, real character, animations, cinematic intro, music/SFX, quests and full levels.
